@@ -89,8 +89,8 @@ class Hotbox(QtWidgets.QWidget):
         #--------------------------------------------------------------------------------------------------
         #context
         #--------------------------------------------------------------------------------------------------
-   
-        self.selection = nuke.selectedNodes()   
+
+        self.selection = nuke.selectedNodes()
 
         #check whether selection in group
         self.groupRoot = 'root'
@@ -213,8 +213,8 @@ class Hotbox(QtWidgets.QWidget):
 
         #if the execute on close function is turned on, the hotbox will execute the selected button upon close
 
-        
-        
+
+
         if hotkey:
             if preferencesNode.knob('hotboxExecuteOnClose').value():
                 if self.activeButton != None:
@@ -298,7 +298,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
             self.rowMaxAmount = int(preferencesNode.knob('hotboxRowAmountAll').value())
 
             self.folderList = []
-            
+
             #----------------------------------------------------------------------------------------------
             #noncontextual
             #----------------------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
             #----------------------------------------------------------------------------------------------
             #contextual
             #----------------------------------------------------------------------------------------------
-            
+
             else:
 
                 mirrored = 1 - mirrored
@@ -329,7 +329,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
                 allRulePaths = []
 
                 for repository in self.allRepositories:
-                    
+
                     rulesFolder = repository + 'Rules'
                     if not os.path.exists(rulesFolder):
                         continue
@@ -348,7 +348,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
 
                                 #read ruleFile to check if ignoreClasses was enabled.
                                 if not ignoreClasses:
-                            
+
                                     for line in open(ruleFile).readlines():
                                         #no point in checking boyond the header
                                         if not line.startswith('#'):
@@ -363,7 +363,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
                 #------------------------------------------------------------------------------------------
 
                 #collect all folders storing buttons for applicable classes
-                
+
                 if not ignoreClasses:
 
                     allClassPaths = []
@@ -417,7 +417,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
                 #------------------------------------------------------------------------------------------
                 #combine classes and rules
                 #------------------------------------------------------------------------------------------
-                
+
                 if ignoreClasses:
                     self.folderList = allRulePaths
 
@@ -441,7 +441,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
         #--------------------------------------------------------------------------------------------------
         #devide in rows based on the row maximum
         #--------------------------------------------------------------------------------------------------
-        
+
         allRows = []
         row = []
 
@@ -808,7 +808,7 @@ class HotboxButton(QtWidgets.QLabel):
             nuke.Undo().begin()
 
             self.invokeButton()
-            
+
             nuke.Undo().end()
 
         return True
@@ -877,7 +877,7 @@ def addPreferences():
     '''
     Add knobs to the preferences needed for this module to work properly.
     '''
-    
+
     addToPreferences(nuke.Tab_Knob('hotboxLabel','W_hotbox'))
     addToPreferences(nuke.Text_Knob('hotboxGeneralLabel','<b>General</b>'))
 
@@ -1231,7 +1231,7 @@ def getSelectionColor():
 
     customColor = rgb2hex(interface2rgb(preferencesNode.knob('hotboxColorCustom').value()))
     colorMode = int(preferencesNode.knob('hotboxColorDropdown').getValue())
-    
+
     return['#5285a6','#f7931e',customColor][colorMode]
 
 #----------------------------------------------------------------------------------------------------------
@@ -1397,7 +1397,7 @@ def resetMenuItems():
     Remove and readd all items to the Nuke menu. Used to change the shotcut
     '''
 
-    global shortcut 
+    global shortcut
     shortcut = preferencesNode.knob('hotboxShortcut').value()
 
     if editMenu.findItem('W_hotbox'):

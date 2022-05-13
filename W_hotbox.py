@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import nuke
 
+from W_hotboxManager import getHotBoxLocation
 #Choose between PySide and PySide2 based on Nuke version
 if nuke.NUKE_VERSION_MAJOR < 11:
     from PySide import QtCore, QtGui, QtGui as QtWidgets
@@ -290,9 +291,7 @@ class NodeButtons(QtWidgets.QVBoxLayout):
                 mode = 1 - mode
                 mirrored = 1 - mirrored
 
-            self.path = preferencesNode.knob('hotboxLocation').value().replace('\\','/')
-            if self.path[-1] != '/':
-                self.path = self.path + '/'
+            self.path = getHotBoxLocation()
 
             self.allRepositories = list(set([self.path]+[i[1] for i in extraRepositories]))
 
@@ -850,9 +849,9 @@ def savePreferencesToFile():
     preferencesCode = 'Preferences {\n inputs 0\n name Preferences%s\n}' %customPrefences
 
     # write to file
-    openPreferencesFile = open( preferencesFile , 'w' )
-    openPreferencesFile.write( preferencesCode )
-    openPreferencesFile.close()
+    with open(preferencesFile, 'wb') as f:
+        f.write( preferencesCode.encode('utf-8') )
+
 
 def deletePreferences():
     '''
@@ -1242,7 +1241,7 @@ def revealInBrowser(startFolder = False):
     Reveal the hotbox folder in a filebrowser
     '''
     if startFolder:
-        path = preferencesNode.knob('hotboxLocation').value()
+        path = getHotBoxLocation()
 
     else:
         try:
@@ -1419,7 +1418,7 @@ addPreferences()
 
 #make sure the archive folders are present, if not, create them
 hotboxLocationPathKnob = preferencesNode.knob('hotboxLocation')
-hotboxLocationPath = hotboxLocationPathKnob.value().replace('\\','/')
+hotboxLocationPath = getHotBoxLocation()
 
 if not hotboxLocationPath:
     hotboxLocationPath = homeFolder + '/W_hotbox'

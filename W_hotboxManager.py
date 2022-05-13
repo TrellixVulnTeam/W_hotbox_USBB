@@ -99,9 +99,7 @@ class HotboxManager(QtWidgets.QWidget):
 
         #If the manager is launched for the default repository, make sure the current archive exists.
 
-        preferencesLocation = preferencesNode.knob('hotboxLocation').value()
-        if preferencesLocation[-1] != '/':
-            preferencesLocation += '/'
+        preferencesLocation = getHotBoxLocation()
 
         if self.rootLocation == preferencesLocation:
             for subFolder in ['','Single', 'Multiple', 'All', 'Single/No Selection', 'Rules', 'Templates']:
@@ -160,7 +158,7 @@ class HotboxManager(QtWidgets.QWidget):
         
         self.hotboxItemsTree = QTreeViewCustom(self)
         self.hotboxItemsTree.setFixedWidth(150)
-        self.rootPath = nuke.toNode('preferences').knob('hotboxLocation').value()
+        self.rootPath = getHotBoxLocation()
 
         self.classesList.itemSelectionChanged.connect(self.hotboxItemsTree.populateTree)
         
@@ -2331,6 +2329,20 @@ class ScriptEditorHighlighter(QtGui.QSyntaxHighlighter):
         else:
             return False
 
+def getHotBoxLocation(path=None):
+    '''
+    Returns the location of the hotbox.
+    '''
+    folder = ""
+    if (path):
+        folder = path
+    else:
+        folder = preferencesNode.knob('hotboxLocation').value()
+
+    if folder[-1] != '/':
+        folder += '/'
+    return folder.replace('\\','/')
+
 #------------------------------------------------------------------------------------------------------
 #Template Button
 #------------------------------------------------------------------------------------------------------
@@ -2344,9 +2356,8 @@ class ScriptEditorTemplateMenu(QtWidgets.QMenu):
         self.hotbox = parentObject
 
         #set default template folder
-        folder = preferencesNode.knob('hotboxLocation').value()
-        if folder[-1] != '/':
-            folder += '/'
+        folder = getHotBoxLocation()
+
         self.templateFolder = folder + 'Templates'
 
         self.initMenu()
@@ -3485,7 +3496,7 @@ class RepairHotbox():
 
         #set root folder
         if folder == None:
-            self.root = preferencesNode.knob('hotboxLocation').value()
+            self.root = getHotBoxLocation()
         else:
             self.root = folder
 
@@ -3592,9 +3603,7 @@ def clearHotboxManager(sections = ['Single','Multiple','All','Rules']):
     if not nuke.ask(message):
         return
 
-    hotboxLocation = preferencesNode.knob('hotboxLocation').value()
-    if hotboxLocation[-1] != '/':
-        hotboxLocation += '/'
+    hotboxLocation = getHotBoxLocation()
 
     clearProgressBar = nuke.ProgressTask('Clearing W_hotbox...')
 
@@ -3702,11 +3711,7 @@ def showHotboxManager(path = ''):
     if hotboxManagerInstance != None:
         hotboxManagerInstance.close()
 
-    if path == '':
-        path = preferencesNode.knob('hotboxLocation').value()
-        
-    if path[-1] != '/':
-        path += '/' 
+    path = getHotBoxLocation(path)
 
     hotboxManagerInstance = HotboxManager(path)
     hotboxManagerInstance.show()
